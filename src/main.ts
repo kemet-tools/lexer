@@ -10,7 +10,7 @@
 
 // ╔════════════════════════════════════════ PACK ════════════════════════════════════════╗
 
-    import { compile } from 'moo';
+    import { compile, Lexer, error as _Error} from 'moo';
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
 
@@ -26,97 +26,13 @@
 		pos 		    : { line : number; col : number; };
 	}
 
-    // The `rules` variable is initialized with the lexer rules compiled by the `moo` library.
-    // These rules define how the lexer will recognize different tokens in the source code.
-    const rules = compile({
-        // Whitespace and newlines
-        ws              : { match: /[ \t]+/, 		    lineBreaks: false },
-        nl              : { match: /\r?\n/, 		    lineBreaks: true, 	value: (text: string) => '' },
+    // The `Rules` type is an alias for the `Lexer` type from the `moo` library.
+    // It represents the lexer rules used to tokenize the source code.
+    export type Rules = Lexer;
 
-        // Comments and Description
-        tslash          : { match: /(?:\/\/\/(?:.*))/,  lineBreaks: false,  value: (text: string) => text.slice(3).trim() },
-        dslash          : { match: /(?:\/\/(?:.*))/,    lineBreaks: false,  value: (text: string) => text.slice(2).trim() },
-
-        // Keywords
-        keyword         : ['const', 'let', 'bool', 'if', 'else', 'while', 'for', 'return', 'break', 'continue', 'pub', 'inline', 'in', 'auto'],
-
-        // // Boolean literals
-        true            : ['true'],
-        false           : ['false'],
-
-        // // Type keywords (add your specific type keywords here)
-        type_keyword    : ['i8', 'i16', 'i32', 'i64', 'i128', 'i256', 'u8', 'u16', 'u32', 'u64', 'u128', 'u256', 'f32', 'f64', 'f128', 'f256', 'bool', 'byte', 'void'],
-
-        // // Builtin function names (add your specific builtins here)
-        builtin_name    : ['print', 'println', 'len', 'sizeof', 'typeof'],
-
-        // Identifiers (must come after keywords)
-        ident           : /[a-zA-Z_][a-zA-Z0-9_]*/,
-
-        // // Literals
-        number          : /[0-9]+(?:\.[0-9]+)?/,
-        string          : {
-            match: /"(?:[^"\\]|\\.)*"/,
-            value: (text: string) => text.slice(1, -1).replace(/\\(.)/g, (_, char) => char)
-        },
-
-        // // Compound assignment operators (must come before single operators)
-        add_assign      : '+=',
-        sub_assign      : '-=',
-        mul_assign      : '*=',
-        div_assign      : '/=',
-        mod_assign      : '%=',
-
-        // // Comparison operators (order matters for multi-character operators)
-        eq              : '==',
-        ne              : '!=',
-        le              : '<=',
-        ge              : '>=',
-        lt              : '<',
-        gt              : '>',
-
-        // // Logical operators
-        logical_and     : '&&',
-        logical_or      : '||',
-        logical_not     : '!',
-
-        // // Bitwise operators
-        left_shift      : '<<',
-        right_shift     : '>>',
-        bitwise_and     : '&',
-        bitwise_or      : '|',
-        bitwise_xor     : '^',
-        bitwise_not     : '~',
-
-        // // Arithmetic operators
-        exponent        : '**',  // Must come before '*'
-        add             : '+',
-        sub             : '-',
-        mul             : '*',
-        div             : '/',
-        mod             : '%',
-
-        // // Assignment and arrows
-        // arrow           : '->',
-        assign          : '=',
-
-        // // Delimiters
-        lparen          : '(',
-        rparen          : ')',
-        lbrace          : '{',
-        rbrace          : '}',
-        lbracket        : '[',
-        rbracket        : ']',
-
-        // // Punctuation
-        comma           : ',',
-        dot             : '.',
-        scolon          : ';',
-        colon           : ':',
-
-        // Error token
-        error           : { match: /[\$?`]/, error: true },
-    });
+    // The `error` constant is an alias for the `error` function from the `moo` library.
+    // It is used to create an error token in the lexer.
+    export const error = _Error;
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝
 
@@ -124,13 +40,13 @@
 
 // ╔════════════════════════════════════════ CORE ════════════════════════════════════════╗
 
-    /**
-     * Tokenizes the given source code string according to the lexer rules.
-     *
-     * @param source_code The source code to tokenize.
-     * @returns An array of tokens. If a token is an error, it will be the last token in the array.
-    */
-    export const tokenize = function (source_code: string) {
+    // The `createRules` constant is an alias for the `compile` function from the `moo` library.
+    // It is used to create the lexer rules used to tokenize the source code.
+    export const createRules = compile;
+
+    // The `tokenize` function takes a set of lexer rules and a source code string as input.
+    // It returns an array of tokens generated by the lexer.
+    export const tokenize = function (rules: Rules, source_code: string) {
         // Initialize an array to hold the tokens and a position counter
 		const tokens    : Token[] = [];
         let position    : number  = 0;
@@ -158,5 +74,8 @@
         // Return the array of tokens
 		return tokens;
     };
+
+    // default export
+    export default { createRules, error, tokenize };
 
 // ╚══════════════════════════════════════════════════════════════════════════════════════╝

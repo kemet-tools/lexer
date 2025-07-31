@@ -9,8 +9,6 @@
         "node_modules": true,
         ".vscode": true,
         ".gitattributes": true,
-        ".npmignore": true,
-        ".gitignore": true,
         "jest.config.js": true,
         "tsup.config.ts": true,
         "tsconfig.json": true

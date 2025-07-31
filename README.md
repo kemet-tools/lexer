@@ -12,27 +12,33 @@
 - #### 🌟 Usage
 
     ```ts
-    import { tokenize } from '@kemet-tools/lexer';
+    import lexer from '@kemet-tools/lexer';
 
-    const tokens = tokenize("// comment\n$..");
+    // Create lexer rules
+    const rules = lexer.createRules({
+        ws              : /[ \t]+/,
+        comment         : /\/\/.*?$/,
+        nl              : { match: '\n', lineBreaks: true },
+        error           : lexer.error
+    });
+
+    // Tokenize
+    const tokens = lexer.tokenize(rules, `// comment\n$`);
     ```
 
     ```json
     [
         {
-            "id"        : 1,
-            "type"      : "dslash",
+            "type"      : "comment",
             "value"     : "comment",
             "pos"       : { "line": 1, "col": 1 }
         },
         {
-            "id"        : 2,
             "type"      : "nl",
             "value"     : "\n",
             "pos"       : { "line": 1, "col": 11 }
         },
         {
-            "id"        : 3,
             "type"      : "error",
             "value"     : "$",
             "pos"       : { "line": 2, "col": 1 }

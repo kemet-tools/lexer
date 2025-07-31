@@ -1,6 +1,6 @@
 {
 	"name"				: "@kemet-tools/lexer",
-	"version"			: "0.0.1",
+	"version"			: "0.0.2",
 	"description"		: "A lexer for the Kemet programming language.",
 	"keywords"			: [ "kemet", "lang", "tools", "lexer" ],
 	"license"			: "MIT",
